@@ -4,6 +4,7 @@ module.exports = {
   testMatch: ["<rootDir>/e2e/**/*.test.js"],
   testTimeout: 120000,
   maxWorkers: 1,
+  testSequencer: require.resolve("./testSequencer.js"),
   globalSetup: "detox/runners/jest/globalSetup",
   globalTeardown: "detox/runners/jest/globalTeardown",
   reporters: [
