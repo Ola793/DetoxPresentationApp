@@ -40,15 +40,15 @@ jobs:
       
     - name: Install Android SDK components
       run: |
-        sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-        sdkmanager "system-images;android-34;google_apis;x86_64"
+        sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+        sdkmanager "system-images;android-33;default;x86_64"
         sdkmanager "emulator"
         
     - name: Create AVD
       run: |
         avdmanager create avd \
           --name Pixel_7 \
-          --package "system-images;android-34;google_apis;x86_64" \
+          --package "system-images;android-33;default;x86_64" \
           --device "pixel_7" \
           --force
           
@@ -66,15 +66,16 @@ jobs:
       
     - name: Start emulator in background
       run: |
-        nohup $ANDROID_HOME/emulator/emulator -avd Pixel_7 -no-snapshot-save -no-audio -no-window -no-boot-anim -gpu swiftshader_indirect -camera-back none -camera-front none > /dev/null 2>&1 &
+        nohup $ANDROID_HOME/emulator/emulator -avd Pixel_7 -no-snapshot-save -no-audio -no-window -no-boot-anim -gpu swiftshader_indirect -camera-back none -camera-front none -memory 2048 > /dev/null 2>&1 &
         echo $! > emulator.pid
         
     - name: Wait for emulator to boot
-      timeout-minutes: 5
+      timeout-minutes: 8
       run: |
         adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
         adb devices
         echo "Emulator booted successfully"
+        sleep 5
         
     - name: Run Detox tests
       run: npm run detox:test
