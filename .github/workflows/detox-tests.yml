@@ -7,9 +7,14 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     
     steps:
     - name: Checkout code
@@ -58,6 +63,7 @@ jobs:
         $ANDROID_HOME/emulator/emulator -avd Pixel_7 -no-audio -no-window -no-boot-anim -gpu swiftshader_indirect &
         
     - name: Wait for emulator to boot
+      timeout-minutes: 10
       run: |
         adb wait-for-device
         adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
