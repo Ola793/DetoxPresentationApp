@@ -1,0 +1,83 @@
+name: Detox E2E Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install Android SDK components
+      run: |
+        sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+        sdkmanager "system-images;android-34;google_apis;x86_64"
+        sdkmanager "emulator"
+        
+    - name: Create AVD
+      run: |
+        avdmanager create avd \
+          --name Pixel_7 \
+          --package "system-images;android-34;google_apis;x86_64" \
+          --device "pixel_7" \
+          --force
+          
+    - name: Grant execute permission for gradlew
+      run: chmod +x android/gradlew
+      
+    - name: Build Detox
+      run: npm run detox:build
+      
+    - name: Start emulator in background
+      run: |
+        $ANDROID_HOME/emulator/emulator -avd Pixel_7 -no-audio -no-window -no-boot-anim -gpu swiftshader_indirect &
+        
+    - name: Wait for emulator to boot
+      run: |
+        adb wait-for-device
+        adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
+        adb shell input keyevent 82
+        
+    - name: Run Detox tests
+      run: npm run detox:test
+      
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: detox-test-results
+        path: |
+          test-report.html
+          artifacts/
+          
+    - name: Upload test report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-report
+        path: test-report.html

@@ -1,0 +1,11 @@
+node_modules/
+android/
+ios/
+.gradle/
+*.log
+.DS_Store
+build/
+dist/
+coverage/
+.expo/
+.detox/
