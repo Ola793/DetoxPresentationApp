@@ -43,7 +43,7 @@ npm run detox:build:android
 
 ### 3. Run the Tests
 ```powershell
-npm run detox:test:android
+npm run detox:test
 ```
 
 **What happens:**

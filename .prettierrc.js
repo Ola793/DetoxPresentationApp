@@ -1,3 +1,5 @@
+const { EndOfLineState } = require("typescript");
+
 module.exports = {
   arrowParens: "avoid",
   bracketSameLine: true,
@@ -5,4 +7,5 @@ module.exports = {
   singleQuote: false,
   trailingComma: "all",
   semi: true,
+  endOfLine: "auto"
 };
