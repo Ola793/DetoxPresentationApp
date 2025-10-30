@@ -56,6 +56,12 @@ module.exports = {
         avdName: "Pixel_7",
       },
     },
+    "emulator-ci": {
+      type: "android.emulator",
+      device: {
+        avdName: "test",
+      },
+    },
   },
   configurations: {
     "ios.sim.debug": {
@@ -81,6 +87,10 @@ module.exports = {
     "android.emu.release": {
       device: "emulator",
       app: "android.release",
+    },
+    "android.emu.ci": {
+      device: "emulator-ci",
+      app: "android.debug",
     },
   },
 };

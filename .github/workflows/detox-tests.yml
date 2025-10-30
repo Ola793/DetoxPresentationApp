@@ -38,9 +38,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x android/gradlew
       
-    - name: Build Detox
-      run: npm run detox:build
-      
     - name: Run Detox tests on emulator
       uses: reactivecircus/android-emulator-runner@v2
       with:
@@ -48,7 +45,7 @@ jobs:
         target: default
         arch: x86_64
         profile: pixel_3a
-        script: npm run detox:test
+        script: npm run detox:build && npx detox test -c android.emu.ci --runInBand
         emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         disable-animations: true
       
