@@ -6,6 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
+    "devtools": "npx react-devtools",
     "start": "react-native start",
     "test": "jest",
     "emulator": "powershell -Command \"Start-Process -FilePath $env:ANDROID_HOME\\emulator\\emulator.exe -ArgumentList '-avd','Pixel_7' -WindowStyle Hidden\"",
